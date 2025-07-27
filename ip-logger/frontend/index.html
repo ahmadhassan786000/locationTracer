@@ -33,7 +33,7 @@
       });
 
     function sendData(ipData, lat, lon) {
-      fetch("http://localhost:5000/log-ip", {
+      fetch("https://locationtracer-production.up.railway.app/log-ip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
