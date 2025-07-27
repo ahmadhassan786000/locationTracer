@@ -1,0 +1,34 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+
+# dotenv environment variables
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional: VSC folder/settings
+.vscode/
+
+# Optional: build/output folders
+dist/
+build/
+
+# Coverage for tests (if any)
+coverage/
+
+# IDE-specific
+.idea/
+*.sublime-workspace
+*.sublime-project
