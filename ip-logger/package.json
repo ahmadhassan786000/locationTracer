@@ -4,9 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
-
-  },
+  "start": "node backend/server.js",
+  "dev": "nodemon backend/server.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
