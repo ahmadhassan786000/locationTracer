@@ -7,11 +7,13 @@ const ipSchema = new mongoose.Schema({
   isp: String,
   latitude: Number,
   longitude: Number,
-  timestamp: {
-    type: Date,
-    default: Date.now
-  }
-});
+  mapsLink: String,
+  userAgent: String,
+  screenSize: String,
+  language: String,
+  timezone: String,
+}, { timestamps: true });
 
 const IPModel = mongoose.model("IPLog", ipSchema);
+
 export default IPModel;

